@@ -1016,6 +1016,7 @@ perl_destruct(pTHXx)
     PL_minus_p      = FALSE;
     PL_minus_l      = FALSE;
     PL_minus_a      = FALSE;
+    PL_minus_j      = FALSE;
     PL_minus_F      = FALSE;
     PL_doswitches   = FALSE;
     PL_dowarn       = G_WARN_OFF;
@@ -2245,6 +2246,7 @@ S_parse_body(pTHX_ char **env, XSINIT_t xsinit)
         case 'h':
         case 'i':
         case 'l':
+        case 'j':
         case 'n':
         case 'p':
         case 's':
@@ -3552,6 +3554,7 @@ S_usage(pTHX)		/* XXX move this out into a module ? */
 "  -l[octnum]            enable line ending processing, specifies line terminator\n"
 "  -[mM][-]module        execute \"use/no module...\" before executing program\n"
 "  -n                    assume \"while (<>) { ... }\" loop around program\n"
+"  -j                    auto decode_json with -n or -p into $data"
 "  -p                    assume loop like -n but print line also, like sed\n"
 "  -s                    enable rudimentary parsing for switches after programfile\n"
 "  -S                    look for programfile using PATH environment variable\n",
@@ -3858,6 +3861,10 @@ Perl_moreswitches(pTHX_ const char *s)
         }
         else
             Perl_croak(aTHX_ "No directory specified for -I");
+        return s;
+    case 'j':
+        PL_minus_j = TRUE;
+        s++;
         return s;
     case 'l':
         PL_minus_l = TRUE;
